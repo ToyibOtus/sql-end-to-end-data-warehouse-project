@@ -6,7 +6,6 @@ Script Purpose:
 	This script creates a new database [Datawarehouse] from the scratch. It firstly 
 	checks the existence of this database, drops it if it exists, and recreates it from
 	the scratch. In addition, it creates 5 schemas:
-	
 	* bronze,
 	* silver,
 	* gold,
