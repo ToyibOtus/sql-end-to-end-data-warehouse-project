@@ -51,3 +51,6 @@ GO
 IF NOT EXISTS(SELECT 1 FROM sys.schemas WHERE name = 'etl')
 EXEC ('CREATE SCHEMA etl');
 GO
+-- Create schema [staging] if it doesn't exist
+IF NOT EXISTS(SELECT 1 FROM sys.schemas WHERE name = 'staging')
+EXEC ('CREATE SCHEMA staging');
