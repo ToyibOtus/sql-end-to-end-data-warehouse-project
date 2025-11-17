@@ -20,7 +20,7 @@ Note:
 	  unified tracking, and thus enabling easy traceability and debugging.
 ========================================================================================================
 */
-CREATE OR ALTER PROCEDURE bronze.load_bronze_archive_reviews AS
+CREATE OR ALTER   PROCEDURE [bronze].[load_bronze_archive_reviews] AS
 BEGIN
 	-- Declare Variables
 	DECLARE
@@ -48,46 +48,10 @@ BEGIN
 		SET @start_time = GETDATE();
 
 		-- Delete data from table
-		TRUNCATE TABLE bronze.archive_reviews
+		TRUNCATE TABLE bronze.archive_reviews;
 
-		-- Load data into table
-		INSERT INTO bronze.archive_reviews
-		(
-		review_id,
-		order_id,
-		product_id,
-		rating,
-		review_text,
-		review_time,
-		dwh_batch_id,
-		dwh_raw_rows,
-		dwh_row_hash
-		)
-		SELECT
-		review_id,
-		order_id,
-		product_id,
-		rating,
-		review_text,
-		review_time,
-		dwh_batch_id,
-		CONCAT_WS('|', review_id, order_id, product_id, rating, review_text, review_time) AS dwh_raw_rows,
-		HASHBYTES('SHA2_256', CONCAT_WS('|', review_id, order_id, product_id, 
-		rating, review_text, review_time)) AS dwh_row_hash
-		FROM
-		(
-		SELECT
-		review_id,
-		order_id,
-		product_id,
-		rating,
-		CASE 
-			WHEN review_text_sub_str IS NULL THEN review_text
-			ELSE CONCAT(review_text, ', ', review_text_sub_str)
-		END AS review_text,
-		review_time,
-		dwh_batch_id
-		FROM
+		-- Retrieve all data from [staging.archive_reviews]
+		WITH raw_data AS 
 		(
 		SELECT
 			review_id,
@@ -106,8 +70,48 @@ BEGIN
 			END AS review_text_sub_str,
 			@batch_id AS dwh_batch_id
 		FROM staging.archive_reviews
-		)SUB1
-		)SUB2;
+		)
+		-- Repair faulty columns
+		, enhanced_raw_data AS
+		(
+		SELECT 
+			review_id,
+			order_id,
+			product_id,
+			rating,
+			CASE 
+			WHEN review_text_sub_str IS NULL THEN review_text
+			ELSE CONCAT(review_text, ', ', review_text_sub_str)
+			END AS review_text,
+			review_time,
+			dwh_batch_id
+		FROM raw_data
+		)
+		-- Load data into table
+		INSERT INTO bronze.archive_reviews
+		(
+			review_id,
+			order_id,
+			product_id,
+			rating,
+			review_text,
+			review_time,
+			dwh_batch_id,
+			dwh_raw_rows,
+			dwh_row_hash
+		)
+		SELECT
+			review_id,
+			order_id,
+			product_id,
+			rating,
+			review_text,
+			review_time,
+			dwh_batch_id,
+			CONCAT_WS('|', review_id, order_id, product_id, rating, review_text, review_time) AS dwh_raw_rows,
+			HASHBYTES('SHA2_256', CONCAT_WS('|', review_id, order_id, product_id, 
+			rating, review_text, review_time)) AS dwh_row_hash
+		FROM enhanced_raw_data;
 
 		-- Map values to variables
 		SET @end_time = GETDATE();
@@ -199,3 +203,4 @@ BEGIN
 		);
 	END CATCH;
 END;
+GO
