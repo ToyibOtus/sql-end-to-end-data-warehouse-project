@@ -52,7 +52,7 @@ BEGIN
 		-- Retrieve total rows from corresponding staging table
 		SELECT @rows_source = COUNT(*) FROM staging.archive_customers;
 
-		-- Throw an error total rows is NULL or zero
+		-- Throw an error if total rows is NULL or zero
 		IF @rows_source IS NULL OR @rows_source = 0 THROW 50002, 'No records found in staging.archive_customers. Load aborted.', 2;
 
 		-- Capture load start time
