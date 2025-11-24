@@ -158,11 +158,12 @@ BEGIN
 		-- Rollback any open transaction
 		IF @@TRANCOUNT > 0 ROLLBACK TRAN;
 
-		-- Map value to rows loaded is NULL
+		-- Map value to rows loaded if NULL
 		IF @rows_loaded IS NULL SET @rows_loaded = 0;
-		-- Map value to row difference when error occurs 
+		-- Map value to row difference when an error occurs 
 		SET @rows_diff = @rows_source - @rows_loaded;
 
+		-- Load etl log table with error details
 		INSERT INTO audit.etl_log_table
 		(
 		etl_batch_id,
