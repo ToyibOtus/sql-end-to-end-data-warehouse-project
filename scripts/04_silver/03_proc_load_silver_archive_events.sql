@@ -1,3 +1,26 @@
+/*
+==========================================================================================================
+Stored Procedure: Load Silver Layer(Bronze -> Silver)
+==========================================================================================================
+Script Purpose:
+	This script performs incremental load on the silver table [silver.load_silver_archive_events]. 
+	It performs various transformations, such as data cleansing, data standardization, data enrichment,
+	and deriving new columns, where necessary. In addition to this, it loads the etl log table 
+	[audit.etl_log_table], enriching it with vital execution details.
+
+Parameter: None
+
+Usage: EXEC silver.load_silver_archive_events;
+
+Note:
+	* Running this script assigns a batch id from it corresponding bronze table.
+	* Though all corresponding tables from each layer have similar batch_id, they vary across 
+	  non-corresponding tables.
+	* Run the master procedure in the etl schema, as it performs a full ETL and 
+	  assigns a similar batch_id across all layers, and tables. This allows for 
+	  unified tracking, and thus enabling easy traceability and debugging.
+==========================================================================================================
+*/
 CREATE OR ALTER PROCEDURE silver.load_silver_archive_events AS
 BEGIN
 	-- Ensure transaction auto-aborts on severe errors
@@ -105,6 +128,7 @@ BEGIN
 			dwh_row_hash
 		FROM cleaned_records;
 
+		-- Retrieve rows loaded at the end of the transaction
 		SET @rows_loaded = @@ROWCOUNT;
 
 		-- Finalize transaction on success
