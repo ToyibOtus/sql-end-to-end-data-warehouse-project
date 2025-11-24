@@ -135,6 +135,7 @@ BEGIN
 			dwh_row_hash
 		FROM cleaned_records;
 
+		-- Retrieve rows loaded at the end of the transaction
 		SET @rows_loaded = @@ROWCOUNT;
 
 		-- Finalize transaction on success
