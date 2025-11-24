@@ -21,31 +21,45 @@ Note:
 */
 CREATE OR ALTER PROCEDURE bronze.load_bronze_archive_products AS
 BEGIN
-	-- Declare Variables
-	DECLARE
-	@batch_id UNIQUEIDENTIFIER = NEWID(),
-	@ingest_source NVARCHAR(250),
-	@layer NVARCHAR(50),
-	@load_type NVARCHAR(50),
-	@proc_name NVARCHAR(50),
-	@table_loaded NVARCHAR(50),
-	@load_status NVARCHAR(50),
+	-- Ensure transaction auto-aborts on severe errors
+	SET XACT_ABORT ON;
+	
+	-- Declare and map values to variables where necessary
+	DECLARE 
+	@batch_id UNIQUEIDENTIFIER,
+	@layer NVARCHAR(50) = 'bronze',
+	@table_loaded NVARCHAR(50) = 'archive_products',
+	@proc_name NVARCHAR(50) = 'load_bronze_archive_products',
+	@load_type NVARCHAR(50) = 'Full',
+	@ingest_source NVARCHAR(250) = 'staging.archive_products',
 	@start_time DATETIME,
 	@end_time DATETIME,
 	@load_duration INT,
+	@load_status NVARCHAR(50),
 	@rows_source INT,
 	@rows_loaded INT,
 	@rows_diff INT;
 
 	BEGIN TRY
-		-- Map values to variables
-		SET @layer = 'bronze';
-		SET @load_type = 'Full';
-		SET @proc_name = 'load_bronze_archive_products';
+		-- Retrieve corresponding batch_id from etl log table
+		SELECT @batch_id = etl_batch_id FROM audit.etl_log_table WHERE etl_layer = 'staging'
+		AND etl_table_loaded = 'archive_products';
+
+		-- Throw an error if corresponding batch_id is NULL
+		IF @batch_id IS NULL THROW 50001, 'bronze.archive_products cannot load before staging.archive_products. Load aborted.', 1;
+
+		-- Retrieve total rows from corresponding staging table
 		SELECT @rows_source = COUNT(*) FROM staging.archive_products;
-		SET @ingest_source = 'staging.archive_products'
+
+		-- Throw an error if total rows is NULL or zero
+		IF @rows_source IS NULL OR @rows_source = 0 THROW 50002, 'No records found in staging.archive_products. Load aborted.', 2
+
+		-- Capture load start time
 		SET @start_time = GETDATE();
 
+		-- Begin ETL transaction
+		BEGIN TRAN;
+		
 		-- Delete data from table
 		TRUNCATE TABLE bronze.archive_products;
 
@@ -54,7 +68,7 @@ BEGIN
 		(
 			product_id,
 			category,
-			name,
+			[name],
 			price_usd,
 			cost_usd,
 			margin_usd,
@@ -65,18 +79,26 @@ BEGIN
 		SELECT
 			product_id,
 			category,
-			name,
+			[name],
 			price_usd,
 			cost_usd,
 			margin_usd,
 			@batch_id AS dwh_batch_id,
-			CONCAT_WS('|', product_id, category, name, price_usd, cost_usd, margin_usd) AS dwh_raw_rows,
-			HASHBYTES('SHA2_256', CONCAT_WS('|', product_id, category, name, price_usd, cost_usd, margin_usd)) AS dwh_row_hash
+			CONCAT_WS('|', UPPER(CAST(product_id AS VARCHAR(50))), UPPER(CAST(category AS VARCHAR(50))), 
+			UPPER(CAST([name] AS VARCHAR(50))), UPPER(CAST(price_usd AS VARCHAR(50))), 
+			UPPER(CAST(cost_usd AS VARCHAR(50))), UPPER(CAST(margin_usd AS VARCHAR(50)))) AS dwh_raw_rows,
+			HASHBYTES('SHA2_256', CONCAT_WS('|', UPPER(CAST(product_id AS VARCHAR(50))) COLLATE LATIN1_GENERAL_100_BIN2, 
+			UPPER(CAST(category AS VARCHAR(50))) COLLATE LATIN1_GENERAL_100_BIN2, UPPER(CAST([name] AS VARCHAR(50))) 
+			COLLATE LATIN1_GENERAL_100_BIN2, UPPER(CAST(price_usd AS VARCHAR(50))) COLLATE LATIN1_GENERAL_100_BIN2, 
+			UPPER(CAST(cost_usd AS VARCHAR(50))) COLLATE LATIN1_GENERAL_100_BIN2, UPPER(CAST(margin_usd AS VARCHAR(50))) 
+			COLLATE LATIN1_GENERAL_100_BIN2)) AS dwh_row_hash
 		FROM staging.archive_products;
+
+		-- Finalize transaction on success
+		COMMIT TRAN;
 
 		-- Map values to variables
 		SET @end_time = GETDATE();
-		SET @table_loaded = 'archive_products';
 		SET @load_status = 'Success';
 		SELECT @rows_loaded = COUNT(*) FROM bronze.archive_products;
 		SET @rows_diff = @rows_source - @rows_loaded;
@@ -118,49 +140,71 @@ BEGIN
 	END TRY
 
 	BEGIN CATCH
+		-- Map a default value to batch_id if NULL
+		IF @batch_id IS NULL SET @batch_id = '00000000-0000-0000-0000-000000000000';
+
+		-- Map a default value to start time if error occurs before ETL transaction
+		IF @start_time IS NULL SET @start_time = GETDATE();
+
 		-- Map values to variables
 		SET @end_time = GETDATE();
-		SET @load_status = 'Failed';
 		SET @load_duration = DATEDIFF(second, @start_time, @end_time);
-		
-		-- Load etl log table with vital error details
+		SET @load_status = 'Failed'
+
+		-- Rollback any open transaction
+		IF @@TRANCOUNT > 0 ROLLBACK TRAN;
+
+		-- Map value to rows loaded if NULL
+		IF @rows_loaded IS NULL SET @rows_loaded = 0;
+
+		-- Map value to row difference when an error occurs
+		SET @rows_diff = @rows_source - @rows_loaded;
+
+		-- Load etl log table with error details
 		INSERT INTO audit.etl_log_table
 		(
-			etl_batch_id,
-			etl_layer, 
-			etl_load_type, 
-			etl_proc_name,
-			etl_table_loaded,
-			etl_ingest_source,
-			etl_load_status,
-			etl_start_time,
-			etl_end_time,
-			etl_load_duration_seconds,
-			etl_error_message,
-			etl_error_number,
-			etl_error_line,
-			etl_error_severity,
-			etl_error_state,
-			etl_error_proc
+		etl_batch_id,
+		etl_layer,
+		etl_table_loaded,
+		etl_proc_name,
+		etl_load_type,
+		etl_ingest_source,
+		etl_start_time,
+		etl_end_time,
+		etl_load_duration_seconds,
+		etl_load_status,
+		etl_rows_source,
+		etl_rows_loaded,
+		etl_rows_diff,
+		etl_error_message,
+		etl_error_number,
+		etl_error_line,
+		etl_error_severity,
+		etl_error_state,
+		etl_error_proc
 		)
 		VALUES
 		(
-			@batch_id,
-			@layer,
-			@load_type,
-			@proc_name,
-			@table_loaded,
-			@ingest_source,
-			@load_status,
-			@start_time,
-			@end_time,
-			@load_duration,
-			ERROR_MESSAGE(),
-			ERROR_NUMBER(),
-			ERROR_LINE(),
-			ERROR_SEVERITY(),
-			ERROR_STATE(),
-			ERROR_PROCEDURE()	
-		);
+		@batch_id,
+		@layer,
+		@table_loaded,
+		@proc_name,
+		@load_type,
+		@ingest_source,
+		@start_time,
+		@end_time,
+		@load_duration,
+		@load_status,
+		@rows_source,
+		@rows_loaded,
+		@rows_diff,
+		ERROR_MESSAGE(),
+		ERROR_NUMBER(),
+		ERROR_LINE(),
+		ERROR_SEVERITY(),
+		ERROR_STATE(),
+		ERROR_PROCEDURE()
+		)
 	END CATCH;
 END;
+GO
