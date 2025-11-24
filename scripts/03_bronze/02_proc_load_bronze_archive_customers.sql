@@ -24,7 +24,7 @@ BEGIN
 	-- Ensure transaction auto-aborts on severe errors
 	SET XACT_ABORT ON;
 	
-	-- Declare Variables
+	-- Declare and map values to variables where necessary
 	DECLARE 
 	@batch_id UNIQUEIDENTIFIER,
 	@layer NVARCHAR(50) = 'bronze',
