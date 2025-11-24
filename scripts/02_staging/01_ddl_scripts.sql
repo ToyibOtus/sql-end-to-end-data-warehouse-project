@@ -18,7 +18,7 @@ GO
 CREATE TABLE staging.archive_customers
 (
 	customer_id INT,
-	name NVARCHAR(50),
+	[name] NVARCHAR(50),
 	email NVARCHAR(50),
 	country NVARCHAR(50),
 	age INT,
@@ -35,8 +35,8 @@ GO
 CREATE TABLE staging.archive_events
 (
 	event_id INT,
-	session_id INT,
-	timestamp DATETIME,
+	[session_id] INT,
+	[timestamp] DATETIME,
 	event_type NVARCHAR(50),
 	product_id DECIMAL(8, 1),
 	qty DECIMAL(8, 1),
@@ -91,7 +91,7 @@ CREATE TABLE staging.archive_products
 (
 	product_id INT,
 	category NVARCHAR(50),
-	name NVARCHAR(50),
+	[name] NVARCHAR(50),
 	price_usd DECIMAL(8, 2),
 	cost_usd DECIMAL(8, 2),
 	margin_usd DECIMAL(8, 2)
@@ -121,10 +121,10 @@ GO
 -- Create Table [staging.archive_sessions]
 CREATE TABLE staging.archive_sessions
 (
-	session_id INT,
+	[session_id] INT,
 	customer_id INT,
 	start_time DATETIME,
 	device NVARCHAR(50),
-	source NVARCHAR(50),
+	[source] NVARCHAR(50),
 	country NVARCHAR(50)
 );
