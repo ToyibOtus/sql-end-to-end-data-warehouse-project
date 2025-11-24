@@ -8,7 +8,7 @@ Script Purpose:
 	the etl log table [audit.etl_log_table], enabling easy etl monitoring, tracebaility, and
 	debugging.
 
-Parameter: None.
+Parameter: @batch_id UNIQUEIDENTIFIER
 
 Usage: EXEC staging.load_staging_archive_events;
 
