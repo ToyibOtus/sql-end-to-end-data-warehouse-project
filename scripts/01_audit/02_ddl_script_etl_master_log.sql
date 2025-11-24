@@ -8,11 +8,11 @@ Script Purpose:
 	Run this script to redefine the structure of your master log table.
 =======================================================================
 */
-IF OBJECT_ID('audit.master_etl_log', 'U') IS NOT NULL
-DROP TABLE audit.master_etl_log;
+IF OBJECT_ID('audit.etl_master_log', 'U') IS NOT NULL
+DROP TABLE audit.etl_master_log;
 GO
 
-CREATE TABLE audit.master_etl_log
+CREATE TABLE audit.etl_master_log
 (
 	etl_log_id INT IDENTITY(1, 1) PRIMARY KEY NOT NULL,
 	etl_run_id UNIQUEIDENTIFIER NOT NULL,
