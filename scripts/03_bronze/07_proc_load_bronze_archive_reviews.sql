@@ -21,8 +21,8 @@ BEGIN
 
 	BEGIN TRY
 		-- Retrieve corresponding batch_id from etl log table
-		SELECT @batch_id = etl_batch_id FROM audit.etl_log_table WHERE etl_layer = 'staging'
-		AND etl_table_loaded = 'archive_reviews';
+		SELECT TOP 1 @batch_id = etl_batch_id FROM audit.etl_log_table WHERE etl_layer = 'staging'
+		AND etl_table_loaded = 'archive_reviews' ORDER BY etl_start_time DESC;
 
 		-- Throw an error if corresponding batch_id is NULL
 		IF @batch_id IS NULL THROW 50001, 'bronze.archive_reviews cannot load before staging.archive_reviews. Load aborted.', 1;
