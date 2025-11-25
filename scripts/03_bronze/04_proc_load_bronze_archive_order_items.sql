@@ -42,8 +42,8 @@ BEGIN
 
 	BEGIN TRY
 		-- Retrieve corresponding batch_id from etl log table
-		SELECT @batch_id = etl_batch_id FROM audit.etl_log_table WHERE etl_layer = 'staging'
-		AND etl_table_loaded = 'archive_order_items';
+		SELECT TOP 1 @batch_id = etl_batch_id FROM audit.etl_log_table WHERE etl_layer = 'staging'
+		AND etl_table_loaded = 'archive_order_items' ORDER BY etl_start_time DESC;
 
 		-- Throw an error if corresponding batch_id is NULL
 		IF @batch_id IS NULL THROW 50001, 
