@@ -3,8 +3,8 @@
 Stored Procedure: Full ETL Operation (csv file -> staging -> bronze -> silver ->)
 ===========================================================================================================
 Script Purpose:
-	The script performs a full etl run, loading all layers from staging, to bronze and silver.
-	In addition, it loads the etl master log table with vital execution details. 
+	This script performs a full etl run, loading all layers from staging, to bronze and silver.
+	Additionally, it loads the etl master log table with vital execution details. 
 	
 Parameter: None
 
