@@ -1,3 +1,24 @@
+/*
+========================================================================================================
+Stored Procedure: Load Bronze Layer (Staging -> Bronze)
+========================================================================================================
+Script Purpose:
+	This script loads data directly from staging table [staging.archive_reviews] into its
+	corresponding bronze table. In addition to this, it adds vital metadata information, preparing
+	it not only for easy tracebility and debugging, but for subsequent incremental load of the
+	silver layer. It also adds vital etl log information to the elt log table.
+
+Parameter: None.
+
+Usage: EXEC bronze.load_bronze_archive_reviewss;
+
+Note:
+	* Running this script assigns a unique batch_id to this table.
+	* Run the master procedure in the etl schema, as it performs a full ETL and 
+	  assigns a similar batch_id across all layers, and tables. This allows for 
+	  unified tracking, and thus enabling easy traceability and debugging.
+========================================================================================================
+*/
 CREATE OR ALTER  PROCEDURE bronze.load_bronze_archive_reviews AS
 BEGIN
 	-- Ensure transaction auto-aborts on severe errors
