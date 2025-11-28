@@ -11,7 +11,7 @@ Parameter: None
 Usage: EXEC etl.run_master_pipeline;
 
 Note:
-	Running this script assigns a similar batch_id across all layers, and tables. 
+	Running this script assigns a similar run_id across all layers, and tables. 
 	This allows for unified tracking, and thus enabling easy traceability and debugging.
 ===========================================================================================================
 */
