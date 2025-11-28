@@ -94,7 +94,7 @@ CREATE TABLE silver.archive_orders
     total_usd DECIMAL(8, 2),
     country NVARCHAR(50),
     device NVARCHAR(50),
-    source NVARCHAR(50),
+    [source] NVARCHAR(50),
 
 	-- Metadata Columns
 	dwh_batch_id UNIQUEIDENTIFIER,
