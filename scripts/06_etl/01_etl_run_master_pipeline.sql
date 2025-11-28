@@ -57,6 +57,15 @@ BEGIN
 		EXEC silver.load_silver_archive_reviews;
 		EXEC silver.load_silver_archive_sessions;
 
+		-- Load gold layer
+		EXEC gold.load_gold_dim_customers;
+		EXEC gold.load_gold_dim_products;
+		EXEC gold.load_gold_fact_orders;
+		EXEC gold.load_gold_fact_order_items;
+		EXEC gold.load_gold_dim_sessions;
+		EXEC gold.load_gold_fact_events;
+		EXEC gold.load_gold_fact_reviews;
+
 		-- Map values to variables
 		SET @end_time = GETDATE();
 		SET @load_duration = DATEDIFF(second, @start_time, @end_time);
