@@ -17,7 +17,8 @@ GO
 CREATE TABLE audit.etl_log_table
 (
     etl_log_id INT IDENTITY(1,1) NOT NULL,
-    etl_batch_id UNIQUEIDENTIFIER NOT NULL,
+    etl_run_id UNIQUEIDENTIFIER NOT NULL,
+	etl_source_batch_id UNIQUEIDENTIFIER NOT NULL,
     etl_layer NVARCHAR(50) NOT NULL,
     etl_table_loaded NVARCHAR(50) NOT NULL,
     etl_proc_name NVARCHAR(50) NOT NULL,
