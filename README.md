@@ -39,6 +39,7 @@ Build a modern data warehouse that supports easy data access, retrieval, and ana
 * **Documentation**: Provide clear documentation to support analytical teams and business stakeholders.
 
 ## Objectives
+* **Build Staging Layer**
 * **Build Bronze Layer**
 * **Build Silver Layer**
 * **Build Gold Layer**
@@ -60,14 +61,14 @@ These insights provide key business metrics that support business stakeholders i
 ---
 
 ## Data Architecture
-This project follows the medallion architecture **Bronze**, **Silver**, and **Gold**, with an additional **Staging** layer for storing raw data as-is.
+This data architecture follows the medallion architecture **Bronze**, **Silver**, and **Gold**, with an additional **Staging** layer.
 
 ![data_architecture.png](docs/01_data_architecture.png)
 
-* **Staging** holds raw data.
-* **Bronze** holds enhanced raw data, and metadata.
-* **Silver** holds cleaned and prepared data.
-* **Gold** holds business-ready data.
+1. **Staging**: Permanent raw file storage.
+2. **Bronze**: Raw data + ingestion metadata + structural fixes needed to load the data.
+3. **Silver**: Cleaned and prepared data.
+4. **Gold**: Business-ready data.
 
 ## License
 This project is licensed by **[MIT License]**. You can use and modify it with proper attributions.
