@@ -13,12 +13,10 @@ Parameter: None
 Usage: EXEC silver.load_silver_archive_reviews;
 
 Note:
-	* Running this script assigns a batch id from it corresponding bronze table.
-	* Though all corresponding tables from each layer have similar batch_id, they vary across 
-	  non-corresponding tables.
-	* Run the master procedure in the etl schema, as it performs a full ETL and 
-	  assigns a similar batch_id across all layers, and tables. This allows for 
-	  unified tracking, and thus enabling easy traceability and debugging.
+	* Running this script retrieves run_id and source_batch_id from corresponding ingest tables.
+	* Run the master procedure in the etl schema, as it performs a full ETL and  assigns a 
+	  similar run_id across all tables, and layers. This allows for unified tracking, and 
+	  thus enabling easy traceability and debugging.
 ==========================================================================================================
 */
 CREATE OR ALTER PROCEDURE silver.load_silver_archive_reviews AS
@@ -28,7 +26,8 @@ BEGIN
 	
 	-- Declare and map values to variables where necessary
 	DECLARE 
-	@batch_id UNIQUEIDENTIFIER,
+	@run_id UNIQUEIDENTIFIER,
+	@source_batch_id UNIQUEIDENTIFIER,
 	@layer NVARCHAR(50) = 'silver',
 	@table_loaded NVARCHAR(50) = 'archive_reviews',
 	@proc_name NVARCHAR(50) = 'load_silver_archive_reviews',
@@ -43,13 +42,18 @@ BEGIN
 	@rows_diff INT;
 
 	BEGIN TRY
-		-- Retrieve corresponding batch_id from etl log table
-		SELECT TOP 1 @batch_id = etl_batch_id FROM audit.etl_log_table WHERE
+		-- Retrieve corresponding run_id from etl log table
+		SELECT TOP 1 @run_id = etl_run_id FROM audit.etl_log_table WHERE
 		etl_layer = 'bronze' AND etl_table_loaded = 'archive_reviews'
 		ORDER BY etl_start_time DESC;
 
-		-- Throw an error if corresponding batch_id is NULL
-		IF @batch_id IS NULL THROW 50001, 'silver.archive_reviews cannot load before bronze.archive_reviews. Load aborted.', 1;
+		-- Throw an error if corresponding run_id is NULL
+		IF @run_id IS NULL THROW 50001, 'silver.archive_reviews cannot load before bronze.archive_reviews. Load aborted.', 1;
+
+		-- Retrieve corresponding source_batch_id from etl log table
+		SELECT TOP 1 @source_batch_id = etl_source_batch_id FROM audit.etl_log_table
+		WHERE etl_layer = 'bronze' and etl_table_loaded = 'archive_reviews'
+		ORDER BY etl_start_time DESC;
 
 		WITH new_records AS 
 		(
@@ -129,7 +133,6 @@ BEGIN
 			dwh_row_hash
 		FROM cleaned_records;
 
-		-- Retrieve rows loaded at the end of the transaction
 		SET @rows_loaded = @@ROWCOUNT;
 
 		-- Finalize transaction on success
@@ -144,7 +147,8 @@ BEGIN
 		-- Load etl log table
 		INSERT INTO audit.etl_log_table
 		(
-			etl_batch_id,
+			etl_run_id,
+			etl_source_batch_id,
 			etl_layer,
 			etl_table_loaded,
 			etl_proc_name,
@@ -160,7 +164,8 @@ BEGIN
 		)
 		VALUES
 		(
-			@batch_id,
+			@run_id,
+			@source_batch_id,
 			@layer,
 			@table_loaded,
 			@proc_name,
@@ -178,7 +183,8 @@ BEGIN
 
 	BEGIN CATCH
 		-- Map a default value to batch_id if NULL
-		IF @batch_id IS NULL SET @batch_id = '00000000-0000-0000-0000-000000000000';
+		IF @run_id IS NULL SET @run_id = '00000000-0000-0000-0000-000000000000';
+		IF @source_batch_id IS NULL SET @source_batch_id = '00000000-0000-0000-0000-000000000000';
 
 		-- Map a default value to start time if error occurs before ETL transaction
 		IF @start_time IS NULL SET @start_time = GETDATE();
@@ -190,17 +196,19 @@ BEGIN
 
 		-- Rollback any open transaction
 		IF @@TRANCOUNT > 0 ROLLBACK TRAN;
-
+		
+		-- Map value to rows source if NULL
+		IF @rows_source IS NULL SET @rows_source = 0;
 		-- Map value to rows loaded if NULL
 		IF @rows_loaded IS NULL SET @rows_loaded = 0;
-
-		-- Map value to row difference when an error occurs
+		-- Map value to row difference when error occurs 
 		SET @rows_diff = @rows_source - @rows_loaded;
 
-		-- Load etl log table with error details
+		-- Load log table with error details
 		INSERT INTO audit.etl_log_table
 		(
-			etl_batch_id,
+			etl_run_id,
+			etl_source_batch_id,
 			etl_layer,
 			etl_table_loaded,
 			etl_proc_name,
@@ -222,7 +230,8 @@ BEGIN
 		)
 		VALUES
 		(
-			@batch_id,
+			@run_id,
+			@source_batch_id,
 			@layer,
 			@table_loaded,
 			@proc_name,
