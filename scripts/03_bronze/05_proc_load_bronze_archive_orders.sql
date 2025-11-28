@@ -12,7 +12,8 @@ Parameter: None.
 
 Usage: EXEC bronze.load_bronze_archive_orders;
 
-* Running this retrieves run_id and source_batch_id from corresponding ingest tables.
+Note:
+	* Running this retrieves run_id and source_batch_id from corresponding ingest tables.
 	* Run the master procedure in the etl schema, as it performs a full ETL and  assigns a 
 	  similar run_id across all tables, and layers. This allows for unified tracking, and 
 	  thus enabling easy traceability and debugging.
