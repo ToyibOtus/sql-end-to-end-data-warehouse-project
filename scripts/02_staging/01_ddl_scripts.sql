@@ -90,7 +90,7 @@ CREATE TABLE bronze.archive_orders
     total_usd DECIMAL(8, 2),
     country NVARCHAR(50),
     device NVARCHAR(50),
-    source NVARCHAR(50),
+    [source] NVARCHAR(50),
 	dwh_batch_id UNIQUEIDENTIFIER,
 	dwh_raw_rows NVARCHAR(MAX),
 	dwh_row_hash VARBINARY(64),
