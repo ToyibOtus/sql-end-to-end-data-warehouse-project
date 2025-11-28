@@ -181,7 +181,7 @@ BEGIN
 	END TRY
 
 	BEGIN CATCH
-		-- Map a default value to batch_id if NULL
+		-- Map a default value to run & batch id if NULL
 		IF @run_id IS NULL SET @run_id = '00000000-0000-0000-0000-000000000000';
 		IF @source_batch_id IS NULL SET @source_batch_id = '00000000-0000-0000-0000-000000000000';
 
