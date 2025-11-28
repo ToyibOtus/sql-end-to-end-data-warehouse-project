@@ -35,7 +35,7 @@ Build a modern data warehouse that supports easy data access, retrieval, and ana
 * **Data Source**: Extract CSV files from a central source system (archive).
 * **Data Quality**: Resolve data quality issues prior to analysis.
 * **Data Integration**: Consolidate sales data to support analytical reporting.
-* **Scope**: Focus on latest data only; no historization allowed.
+* **Scope**: Focus on latest and historical data; historization allowed.
 * **Documentation**: Provide clear documentation to support analytical teams and business stakeholders.
 
 ## Objectives
