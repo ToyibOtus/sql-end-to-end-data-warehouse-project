@@ -18,14 +18,12 @@ GO
 CREATE TABLE bronze.archive_customers
 (
     customer_id INT,
-    name NVARCHAR(50),
+    [name] NVARCHAR(50),
     email NVARCHAR(50),
     country NVARCHAR(50),
     age INT,
     signup_date DATE,
     marketing_opt_in NVARCHAR(50),
-	
-	-- Metadata Columns
 	dwh_batch_id UNIQUEIDENTIFIER,
 	dwh_raw_rows NVARCHAR(MAX),
 	dwh_row_hash VARBINARY(64),
@@ -41,8 +39,8 @@ GO
 CREATE TABLE bronze.archive_events
 (
     event_id INT,
-    session_id INT,
-    timestamp DATETIME,
+    [session_id] INT,
+    [timestamp] DATETIME,
     event_type NVARCHAR(50),
     product_id DECIMAL(8, 1),
     qty DECIMAL(8, 1),
@@ -50,8 +48,6 @@ CREATE TABLE bronze.archive_events
     payment NVARCHAR(50),
     discount_pct DECIMAL(8, 1),
     amount_usd DECIMAL(8, 1),
-	
-	-- Metadata Columns
 	dwh_batch_id UNIQUEIDENTIFIER,
 	dwh_raw_rows NVARCHAR(MAX),
 	dwh_row_hash VARBINARY(64),
@@ -71,8 +67,6 @@ CREATE TABLE bronze.archive_order_items
     unit_price_usd DECIMAL(8, 2),
     quantity INT,
     line_total_usd DECIMAL(8, 2),
-	
-	-- Metadata Columns
 	dwh_batch_id UNIQUEIDENTIFIER,
 	dwh_raw_rows NVARCHAR(MAX),
 	dwh_row_hash VARBINARY(64),
@@ -96,9 +90,7 @@ CREATE TABLE bronze.archive_orders
     total_usd DECIMAL(8, 2),
     country NVARCHAR(50),
     device NVARCHAR(50),
-    source NVARCHAR(50),
-
-	-- Metadata Columns
+    [source] NVARCHAR(50),
 	dwh_batch_id UNIQUEIDENTIFIER,
 	dwh_raw_rows NVARCHAR(MAX),
 	dwh_row_hash VARBINARY(64),
@@ -115,12 +107,10 @@ CREATE TABLE bronze.archive_products
 (
     product_id INT,
     category NVARCHAR(50),
-    name NVARCHAR(50),
+    [name] NVARCHAR(50),
     price_usd DECIMAL(8, 2),
     cost_usd DECIMAL(8, 2),
     margin_usd DECIMAL(8, 2),
-
-	-- Metadata Columns
 	dwh_batch_id UNIQUEIDENTIFIER,
 	dwh_raw_rows NVARCHAR(MAX),
 	dwh_row_hash VARBINARY(64),
@@ -141,8 +131,6 @@ CREATE TABLE bronze.archive_reviews
     rating INT,
     review_text NVARCHAR(100),
     review_time NVARCHAR(50),
-
-	-- Metadata Columns
 	dwh_batch_id UNIQUEIDENTIFIER,
 	dwh_raw_rows NVARCHAR(MAX),
 	dwh_row_hash VARBINARY(64),
@@ -157,14 +145,12 @@ GO
 -- Create Table [bronze.archive_sessions]
 CREATE TABLE bronze.archive_sessions
 (
-    session_id INT,
+    [session_id] INT,
     customer_id INT,
     start_time DATETIME,
     device NVARCHAR(50),
-    source NVARCHAR(50),
+    [source] NVARCHAR(50),
     country NVARCHAR(50),
-
-	-- Metadata Columns
 	dwh_batch_id UNIQUEIDENTIFIER,
 	dwh_raw_rows NVARCHAR(MAX),
 	dwh_row_hash VARBINARY(64),
