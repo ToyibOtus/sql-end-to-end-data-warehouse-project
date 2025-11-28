@@ -66,7 +66,7 @@ This data architecture follows the medallion architecture **Bronze**, **Silver**
 ![data_architecture.png](docs/01_data_architecture.png)
 
 1. **Staging**: Permanent raw file storage.
-2. **Bronze**: Raw data + ingestion metadata + structural fixes needed to load the data.
+2. **Bronze**: Raw data + ingested metadata + structural fixes needed to load the data.
 3. **Silver**: Cleaned and prepared data.
 4. **Gold**: Business-ready data.
 
@@ -76,9 +76,9 @@ This project is licensed by **[MIT License]**. You can use and modify it with pr
 ---
 
 ## About Me
-Hi there! I'm **Otusanya Toyib Oluwatimilehine**, an aspiring Data Engineer passionate about building reliable data pipelines, efficient data models, and turning raw data into meaningful insights. 
+Hi there! I'm **Otusanya Toyib Oluwatimilehine**, an aspiring **Data Engineer** passionate about building reliable data pipelines, efficient data models, and turning raw data into meaningful insights. 
 
-<img src="https://cdn-icons-png.flaticon.com/128/724/724664.png" width="18" alt="Phone"/> **07060784176**  
+<img src="https://cdn-icons-png.flaticon.com/128/724/724664.png" width="18" alt="Phone"/> **07060784176** 
 <img src="https://cdn-icons-png.flaticon.com/128/732/732200.png" width="18" alt="E-mail"/> **toyibotusanya@gmail.com**
 
 
