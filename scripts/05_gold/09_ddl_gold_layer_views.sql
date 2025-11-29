@@ -82,6 +82,7 @@ SELECT
 	subtotal_usd,
 	total_usd,
 	country_code,
+	device,
 	traffic_source
 FROM gold.fact_orders;
 GO
