@@ -46,7 +46,7 @@ CREATE TABLE gold.fact_events
     event_timestamp DATETIME,
     event_type NVARCHAR(50),
     product_key INT,
-    qty INT,
+    quantity INT,
     cart_size INT,
     payment NVARCHAR(50),
     discount_pct INT,
