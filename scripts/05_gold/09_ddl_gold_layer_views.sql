@@ -117,7 +117,7 @@ SELECT
 	product_key,
 	quantity,
 	cart_size,
-	payment,
+	payment_method,
 	discount_pct,
 	amount_usd
 FROM gold.fact_events;
