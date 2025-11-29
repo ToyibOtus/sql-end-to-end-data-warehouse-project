@@ -140,7 +140,7 @@ CREATE TABLE gold.fact_reviews
     product_key INT,
     rating INT,
     review_text NVARCHAR(100),
-    review_time DATETIME,
+    review_time DATE,
 
 	-- Metadata Columns
 	dwh_batch_id UNIQUEIDENTIFIER,
