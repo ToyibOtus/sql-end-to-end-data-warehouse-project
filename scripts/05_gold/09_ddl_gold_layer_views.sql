@@ -115,7 +115,7 @@ SELECT
 	event_timestamp,
 	event_type,
 	product_key,
-	qty,
+	quantity,
 	cart_size,
 	payment,
 	discount_pct,
