@@ -60,9 +60,9 @@ BEGIN
 		-- Load gold layer
 		EXEC gold.load_gold_dim_customers;
 		EXEC gold.load_gold_dim_products;
+		EXEC gold.load_gold_dim_sessions;
 		EXEC gold.load_gold_fact_orders;
 		EXEC gold.load_gold_fact_order_items;
-		EXEC gold.load_gold_dim_sessions;
 		EXEC gold.load_gold_fact_events;
 		EXEC gold.load_gold_fact_reviews;
 
