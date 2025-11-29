@@ -71,12 +71,12 @@ This data architecture follows the medallion architecture **Bronze**, **Silver**
 4. **Gold**: Business-ready data.
 
 ## License
-This project is licensed by **[MIT License]**. You can use and modify it with proper attributions.
+This project is licensed by **[MIT License]**. You can use and modify with proper attributions.
 
 ---
 
 ## About Me
-Hi there! I'm **Otusanya Toyib Oluwatimilehine**, an aspiring **Data Engineer** passionate about building reliable data pipelines, efficient data models, and turning raw data into meaningful insights. 
+Hi there! I'm **Otusanya Toyib Oluwatimilehin**, an aspiring **Data Engineer** passionate about building reliable data pipelines, efficient data models, and turning raw data into meaningful insights. 
 
 <img src="https://cdn-icons-png.flaticon.com/128/724/724664.png" width="18" alt="Phone"/> **07060784176** 
 <img src="https://cdn-icons-png.flaticon.com/128/732/732200.png" width="18" alt="E-mail"/> **toyibotusanya@gmail.com**
