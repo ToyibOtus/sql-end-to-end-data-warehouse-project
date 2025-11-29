@@ -105,7 +105,7 @@ BEGIN
 					WHEN review_text LIKE ('%,') THEN TRIM(SUBSTRING(TRIM(review_text), 1, LEN(review_text) - 1))
 					ELSE TRIM(review_text)
 				END AS review_text,
-				CAST(review_time AS DATETIME) AS review_time,
+				CAST(review_time AS DATE) AS review_time,
 				dwh_batch_id,
 				dwh_row_hash
 			FROM new_records
