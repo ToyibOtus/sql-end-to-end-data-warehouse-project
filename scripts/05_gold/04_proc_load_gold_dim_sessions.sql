@@ -88,7 +88,7 @@ BEGIN
 			nr.start_time,
 			nr.device,
 			nr.[source] AS traffic_source,
-			nr.country,
+			nr.country AS country_code,
 			nr.dwh_batch_id,
 			nr.dwh_row_hash,
 			nr.dwh_create_time
@@ -103,7 +103,7 @@ BEGIN
 			start_time,
 			device,
 			traffic_source,
-			country,
+			country_code,
 			dwh_batch_id,
 			dwh_row_hash,
 			dwh_create_time
@@ -114,7 +114,7 @@ BEGIN
 			start_time,
 			device,
 			traffic_source,
-			country,
+			country_code,
 			dwh_batch_id,
 			dwh_row_hash,
 			dwh_create_time
