@@ -94,7 +94,7 @@ CREATE TABLE gold.fact_orders
     discount_pct INT,
     subtotal_usd DECIMAL(8, 2),
     total_usd DECIMAL(8, 2),
-    country NVARCHAR(50),
+    country_code NVARCHAR(50),
     device NVARCHAR(50),
     traffic_source NVARCHAR(50),
 
@@ -163,7 +163,7 @@ CREATE TABLE gold.dim_sessions
     start_time DATETIME,
     device NVARCHAR(50),
     traffic_source NVARCHAR(50),
-    country NVARCHAR(50),
+    country_code NVARCHAR(50),
 
 	-- Metadata Columns
 	dwh_batch_id UNIQUEIDENTIFIER,
