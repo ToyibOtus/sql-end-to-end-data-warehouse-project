@@ -48,7 +48,7 @@ CREATE TABLE gold.fact_events
     product_key INT,
     quantity INT,
     cart_size INT,
-    payment NVARCHAR(50),
+    payment_method NVARCHAR(50),
     discount_pct INT,
     amount_usd DECIMAL(8, 1),
 	
