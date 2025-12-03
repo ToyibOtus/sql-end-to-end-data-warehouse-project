@@ -330,7 +330,7 @@ FROM
 )SUB
 ORDER BY count_per_event_type DESC;
 
--- What product piques our customers' intrests?
+-- What product piques our customers' interests?
 SELECT
 	p.product_name,
 	COUNT(DISTINCT e.session_key) AS count_product
