@@ -6,7 +6,7 @@ This project showcases industry best practices in data warehousing and analytics
 ---
 
 ## Project Overview
-The goal of this project is to use the **Medalion Approach** to build a modern data warehouse that consolidates multiple sales datasets (customers, products, orders, events etc.) into a unified analytical environment. This project performs the following operations:
+The goal of this project is to use the **Medallion Approach** to build a modern data warehouse that consolidates multiple sales datasets (customers, products, orders, events etc.) into a unified analytical environment. This project performs the following operations:
 
 * **Project Requirement**: Analyze and understand what is expected from our data warehouse.
 * **Data Management Approach**: Choose the appropriate data management approach.
