@@ -116,13 +116,38 @@ These objects contain key business metrics that support analysis, and  thus enab
 * **Purpose:** A report that holds detailed information about customers' sessions. It provides insight into customer's behaviour and interactions with products.
 * **Columns:**
 
-|  **Column Name**   |  **Data Type**               |  **Description**   |
-|--------------------|------------------------------|--------------------|
-|session_key
-|user_session_id
-|customer_key
-|start_time
-|device
-|traffic_source
-|country_code
-|country_name
+|  **Column Name**           |  **Data Type**               |  **Description**   |
+|----------------------------|------------------------------|--------------------|
+|session_key                 |INT                           |A surrogate key that uniquely identifies each session.
+|user_session_id             |INT                           |A unique numerical value assigned to each session.
+|customer_key                |INT                           |A surrogate key that links table to gold.dim_customers_view.
+|customer_name               |NVARCHAR(50)                  |Customer's name recoreded in the system.
+|country_code                |NVARCHAR(50)                  |The country code of the customer's country of residence.
+|country_name                |NVARCHAR(50)                  |The name of customer's country of residence.
+|marketing_opt_in            |NVARCHAR(50)                  |A boolean value that indicates if the customer opted for marketing information (e.g, 'True', 'False').
+|signup_date                 |DATE                          |The date the customer record entered the system.
+|start_time                  |DATETIME                      |The time the session started.
+|device                      |NVARCHAR(50)                  |The device the session took place on (e.g., 'mobile', 'desktop', etc.).
+|traffic_source              |NVARCHAR(50)                  |The channel that brought the customer into the session (e.g., 'paid', 'email', etc.).
+|event_timestamp_start       |DATETIME                      |The time an event started.
+|event_timestamp_end         |DATETIME                      |The time an event ended.
+|event_duration_minute       |INT                           |The timespan or duration of the event in minute.
+|total_events                |INT                           |The total number of events per session
+|total_products_interacted   |INT                           |The number of unique products each customer interacted with per session.
+|total_products_carted       |INT                           |The number of unique products carted per session.
+|total_quantity_carted       |INT                           |The total quantity of products carted per session.
+|total_nr_checkouts          |INT                           |The total number of checkouts per session.
+|cart_size_at_checkout       |INT                           |The total quantity of products carted per session at checkout.
+|total_nr_purchases          |INT                           |The total number of purchases made per session.
+|revenue_generated           |DECIMAL(38, 1)                |The total revenue generated per session.
+|checkout_started            |VARCHAR(3)                    |An alphabetical value indicating whether a checkout started or not (e.g., 'Yes', 'No').
+|purchase_made               |VARCHAR(3)                    |An alphabetical value indicating whether a purchase was made or not (e.g., 'Yes', 'No').
+|completed_checkout          |VARCHAR(11)                   |A alphabetical value indicating whether a checkout was completed or abandoned, or no checkout was made. (e.g., 'No Checkout', 'Completed', 'Abandoned'). 
+
+
+   
+
+
+
+
+
