@@ -139,15 +139,73 @@ These objects contain key business metrics that support analysis, and  thus enab
 |total_nr_checkouts          |INT                                   |The total number of checkouts per session.
 |cart_size_at_checkout       |INT                                   |The total quantity of products carted per session at checkout.
 |total_nr_purchases          |INT                                   |The total number of purchases made per session.
-|revenue_generated           |DECIMAL(38, 1)                        |The total revenue generated per session.
+|revenue_generated           |DECIMAL(8, 1)                        |The total revenue generated per session.
 |checkout_started            |VARCHAR(3)                            |An alphabetical value indicating whether a checkout started or not (e.g., 'Yes', 'No').
 |purchase_made               |VARCHAR(3)                            |An alphabetical value indicating whether a purchase was made or not (e.g., 'Yes', 'No').
 |completed_checkout          |VARCHAR(11)                           |A alphabetical value indicating whether a checkout was completed or abandoned, or no checkout was made. (e.g., 'No Checkout', 'Completed', 'Abandoned'). 
 
+### 9. gold.customers_report_view
+* **Purpose:** A report that holds a well detailed information about our customers.
+* **Columns:**
 
-   
+|  **Column Name**             |  **Data Type**               |  **Description**   |
+|------------------------------|------------------------------|--------------------|
+|customer_key                  |INT                           |A surrogate key that uniquely identifies a customer's record.
+|customer_id                   |INT                           |A unique numerical a value assigned to each customer's record.
+|customer_name                 |NVARCHAR(50)                  |Customer's name recoreded in the system.
+|email                         |NVARCHAR(50)                  |Customer's email recorded in the system.
+|country_code                  |NVARCHAR(50)                  |The country code of the customer's country of residence.
+|country_name                  |NVARCHAR(50)                  |The name of customer's country of residence.
+|age                           |INT                           |Customer's age recorded in the system.
+|age_group                     |VARCHAR(8)                    |Age group customer is categorized into (e.g., 'Below 20', '20-29', '30-39' etc.).
+|signup_date                   |DATE                          |The date the customer record entered the system.
+|marketing_opt_in              |NVARCHAR(50)                  |A boolean value that indicates if the customer opted for marketing information (e.g, 'True', 'False').
+|customer_status               |VARCHAR(7)                    |The stause of each customer, measured based on the total revenue generated and monthly history with the company (e.g., 'VIP', "Regular', and 'New').
+|first_order_time              |DATETIME                      |The first order time a customer made an order.
+|last_order_time               |DATETIME                      |The last order time a customer made an order.
+|lifespan_month                |INT                           |The monthly history each customer has with the company.
+|total_orders                  |INT                           |The total number of orders each customer has made.
+|total_quantity                |INT                           |The total quantity of products each customer has purchased.
+|total_products                |INT                           |The total number of unique products each customer has ordered.
+|total_sales                   |DECIMAL(8, 2)                 |The total revenue each customer has generated.
+|total_sessions                |INT                           |The total number of sessions each customer has had.
+|total_events                  |INT                           |The total number of events each customer has had across all sessions.
+|avg_event_per_session         |DECIMAL(8, 2)                 |The average number of events per session, calculated as: total_events/total_sessions.
+|total_checkouts               |INT                           |The total number of checkouts a customer has made across all sessions.
+|total_pruchases               |INT                           |The total number of purchases a customer has made across all sessions.
+|checkout_conversion_rate      |DECIMAL(8, 2)                 |A value that indicates the rate a checkout is converted to a purchase, calculated as: total_purchases/total_checkouts. 
+|checkout_abandonment_rate     |DECIMAL(8, 2)                 |A value that indicates the rate a checkout is abandoned, calculated as: (total_purchases - total_checkouts)/total_checkouts.
+|recency_month                 |INT                           |The number of months since each customer ordered.
+|order_value                   |DECIMAL(8, 2)                 |The value of each customer's order, calculated as: total_sales/total_orders.
+|average_monthly_spend         |DECIMAL(8, 2)                 |Each customer's average monthly spend, calculated as: total_sales/lifespan_month.
 
+### 10. gold.productss_report_view
+* **Purpose:** A report that holds a well detailed information about our products.
+* **Columns:**
 
+|  **Column Name**             |  **Data Type**               |  **Description**   |
+|------------------------------|------------------------------|--------------------|                          
+|product_key                   |INT                           |A surrogate key that uniquely identifies a product's record.
+|product_id                    |INT                           |A unique numerical a value assigned to each product's record.
+|category                      |NVARCHAR(50)                  |A broader classification of products (e.g., 'Electronics', 'Home & Kitchen').
+|product_name                  |NVARCHAR(50)                  |Descriptive name of the product, including key details such as type and colour, and product code (e.g., Lamp Chocolate 506).
+|product_status                |VARCHAR(14)                   |The product status, measured based on lifespan and total revenue generated (e.g., 'High Performer', 'Mid Performer', and 'Low Performer'. 
+|price_usd                     |DECIMAL(8, 2)                 |The unit price of each product in USD.
+|cost_usd                      |DECIMAL(8, 2)                 |The unit cost of each product in USD.
+|margin_usd                    |DECIMAL(8, 2)                 |The profit a unit product geneartes, calculated as: price_usd - cost_usd.
+|last_order_time               |DATETIME                      |The time a product was last ordered.
+|avg_product_ratings           |DECIMAL(8, 2)                 |The avearge ratings of each product.
+|lifespan_month                |INT                           |The monthly history each product has with the company.
+|total_orders                  |INT                           |The total number of times each product has been ordered.
+|total_quantity                |INT                           |The total quantity of products ordered.
+|total_sales                   |DECIMAL(8, 2)                 |The total revenue each product has generated.
+|total_cost                    |DECIMAL(8, 2)                 |The total amount in USD the company spent on each of the product ordered.
+|total_profit                  |DECIMAL(8, 2)                 |The total profit each product generated, calculated as: total_sales - total_cost.
+|total_customers               |INT                           |The number of unique customers that purchased each product.
+|recency_month                 |INT                           |The number of month each product was last ordered.
+|avg_order_revenue             |DECIMAL(8, 2)                 |The average revenue each product brings in per order, calculated as: total_sales/total_orders.
+|avg_monthly_revenue           |DECIMAL(8, 2)                 |The average revenue each product brings in per month, calcuated as: total_sales/lifespan_month.
+                  
 
 
 
