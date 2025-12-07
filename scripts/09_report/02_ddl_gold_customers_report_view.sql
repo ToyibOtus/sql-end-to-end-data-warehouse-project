@@ -83,7 +83,7 @@ WITH base_query AS
 		COUNT(DISTINCT order_id) AS total_orders,
 		SUM(quantity) AS total_quantity,
 		COUNT(DISTINCT product_key) AS total_products,
-		ROUND(SUM((1 - CAST(discount_pct AS DECIMAL(8, 2))/100) * line_total_usd), 2) AS total_sales
+		CAST(ROUND(SUM((1 - (discount_pct * 1.0)/100) * line_total_usd), 2) AS DECIMAL(8, 2)) AS total_sales
 	FROM base_query
 	GROUP BY
 		customer_key,
@@ -161,11 +161,11 @@ SELECT
 	DATEDIFF(month, last_order_time, GETDATE()) AS recency_month,
 	CASE
 		WHEN total_orders = 0 THEN 0 
-		ELSE ROUND(total_sales/total_orders, 2)
+		ELSE CAST(ROUND(total_sales/total_orders, 2) AS DECIMAL(8, 2))
 	END AS order_value,
 	CASE	
 		WHEN lifespan_month = 0 THEN total_sales
-		ELSE ROUND(total_sales/lifespan_month, 2)
+		ELSE CAST(ROUND(total_sales/lifespan_month, 2) AS DECIMAL(8, 2))
 	END AS average_monthly_spend
 FROM customer_segmentation cs
 LEFT JOIN
@@ -174,12 +174,12 @@ SELECT
 	customer_key,
 	COUNT(user_session_id) AS total_sessions,
 	SUM(total_events) AS total_events,
-	ROUND(SUM(CAST(total_events AS DECIMAL(8, 2)))/NULLIF(COUNT(user_session_id), 0), 2) AS avg_event_per_session,
+	CAST(ROUND((SUM(total_events) * 1.0)/NULLIF(COUNT(user_session_id), 0), 2) AS DECIMAL(8, 2)) AS avg_event_per_session,
 	SUM(total_nr_checkouts) AS total_checkouts,
 	SUM(total_nr_purchases) AS total_purchases,
-	ROUND(SUM(CAST(total_nr_purchases AS DECIMAL(8, 2)))/NULLIF(SUM(total_nr_checkouts), 0), 2) AS checkout_conversion_rate,
-	ROUND((SUM(CAST(total_nr_checkouts AS DECIMAL(8, 2))) - SUM(total_nr_purchases))/
-	NULLIF(SUM(total_nr_checkouts), 0), 2) AS checkout_abandonment_rate
+	CAST(ROUND((SUM(total_nr_purchases) * 1.0)/NULLIF(SUM(total_nr_checkouts), 0), 2) AS DECIMAL(8, 2)) AS checkout_conversion_rate,
+	CAST(ROUND(((SUM(total_nr_checkouts) * 1.0) - SUM(total_nr_purchases))/
+	NULLIF(SUM(total_nr_checkouts), 0), 2) AS DECIMAL(8, 2)) AS checkout_abandonment_rate
 FROM gold.sessions_report_view
 GROUP BY customer_key
 )s
