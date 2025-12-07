@@ -111,3 +111,18 @@ These objects contain key business metrics that support analysis, and  thus enab
 |rating              |INT                           |The rating on a scale of 1-5 a customer gives a product after order.
 |review_text         |NVARCHAR(50)                  |The review text left by the customer, reflecting the rating.
 |review_time         |DATE                          |The time  when a customer submitted a review.
+
+### 8. gold.sessions_report_view
+* **Purpose:** A report that holds detailed information about customers' sessions. It provides insight into customer's behaviour and interactions with products.
+* **Columns:**
+
+|  **Column Name**   |  **Data Type**               |  **Description**   |
+|--------------------|------------------------------|--------------------|
+|session_key
+|user_session_id
+|customer_key
+|start_time
+|device
+|traffic_source
+|country_code
+|country_name
