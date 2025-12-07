@@ -83,7 +83,7 @@ WITH base_query AS
 		COUNT(DISTINCT order_id) AS total_orders,
 		SUM(quantity) AS total_quantity,
 		COUNT(DISTINCT product_key) AS total_products,
-		CAST(ROUND(SUM((1 - (discount_pct * 1.0)/100) * line_total_usd), 2) AS DECIMAL(8, 2)) AS total_sales
+		CAST(SUM((1 - (discount_pct * 1.0)/100) * line_total_usd) AS DECIMAL(8, 2)) AS total_sales
 	FROM base_query
 	GROUP BY
 		customer_key,
@@ -174,12 +174,12 @@ SELECT
 	customer_key,
 	COUNT(user_session_id) AS total_sessions,
 	SUM(total_events) AS total_events,
-	CAST(ROUND((SUM(total_events) * 1.0)/NULLIF(COUNT(user_session_id), 0), 2) AS DECIMAL(8, 2)) AS avg_event_per_session,
+	CAST((SUM(total_events) * 1.0)/NULLIF(COUNT(user_session_id), 0) AS DECIMAL(8, 2)) AS avg_event_per_session,
 	SUM(total_nr_checkouts) AS total_checkouts,
 	SUM(total_nr_purchases) AS total_purchases,
-	CAST(ROUND((SUM(total_nr_purchases) * 1.0)/NULLIF(SUM(total_nr_checkouts), 0), 2) AS DECIMAL(8, 2)) AS checkout_conversion_rate,
-	CAST(ROUND(((SUM(total_nr_checkouts) * 1.0) - SUM(total_nr_purchases))/
-	NULLIF(SUM(total_nr_checkouts), 0), 2) AS DECIMAL(8, 2)) AS checkout_abandonment_rate
+	CAST((SUM(total_nr_purchases) * 1.0)/NULLIF(SUM(total_nr_checkouts), 0) AS DECIMAL(8, 2)) AS checkout_conversion_rate,
+	CAST(((SUM(total_nr_checkouts) * 1.0) - SUM(total_nr_purchases))/
+	NULLIF(SUM(total_nr_checkouts), 0) AS DECIMAL(8, 2)) AS checkout_abandonment_rate
 FROM gold.sessions_report_view
 GROUP BY customer_key
 )s
