@@ -95,7 +95,7 @@ WITH base_query AS
 		SUM(CASE WHEN event_type = 'checkout' THEN 1 ELSE 0 END) AS total_nr_checkouts,
 		SUM(CASE WHEN event_type = 'checkout' THEN cart_size ELSE 0 END) AS cart_size_at_check_out,
 		SUM(CASE WHEN event_type = 'purchase' THEN 1 ELSE 0 END) AS total_nr_purchases,
-		SUM(amount_usd) AS revenue_generated
+		CAST(SUM(amount_usd) AS DECIMAL(8, 1)) AS revenue_generated
 	FROM base_query
 	GROUP BY
 		session_key,
