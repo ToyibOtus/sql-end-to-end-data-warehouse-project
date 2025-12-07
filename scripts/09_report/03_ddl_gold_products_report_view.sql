@@ -71,9 +71,9 @@ WITH base_query AS
 		DATEDIFF(month, MIN(order_time), MAX(order_time)) AS lifespan_month,
 		COUNT(DISTINCT order_id) AS total_orders,
 		SUM(quantity) AS total_quantity,
-		ROUND(SUM((1 - CAST(discount_pct AS DECIMAL(8, 2))/100) * line_total_usd), 2) AS total_sales,
-		SUM(cost_usd * quantity) AS total_cost,
-		ROUND(SUM((1 - CAST(discount_pct AS DECIMAL(8, 2))/100) * line_total_usd) - SUM(cost_usd * quantity), 2) AS total_profit,
+		CAST(SUM((1 - (discount_pct * 1.0)/100) * line_total_usd) AS DECIMAL(8, 2)) AS total_sales,
+		CAST(SUM(cost_usd * quantity) * 1.0 AS DECIMAL(8, 2)) AS total_cost,
+		CAST(SUM((1 - (discount_pct * 1.0)/100) * line_total_usd) - SUM(cost_usd * quantity) AS DECIMAL(8, 2)) AS total_profit,
 		COUNT(DISTINCT customer_key) AS total_customers
 	FROM base_query
 	GROUP BY
@@ -133,11 +133,11 @@ SELECT
 	DATEDIFF(month, last_order_time, GETDATE()) AS recency_month,
 	CASE 
 		WHEN total_orders = 0 THEN 0
-		ELSE ROUND(total_sales/total_orders, 2)
+		ELSE CAST(total_sales/total_orders AS DECIMAL(8, 2))
 	END AS avg_order_revenue,
 	CASE
 		WHEN lifespan_month = 0 THEN total_sales
-		ELSE ROUND(total_sales/lifespan_month, 2)
+		ELSE CAST(total_sales/lifespan_month AS DECIMAL(8, 2))
 	END AS avg_monthly_revenue
 FROM product_segmentation ps
 LEFT JOIN
@@ -145,7 +145,7 @@ LEFT JOIN
 (
 	SELECT
 		product_key,
-		ROUND(AVG(CAST(rating AS DECIMAL(8, 2))), 2) AS avg_product_ratings
+		CAST(AVG(rating * 1.0) AS DECIMAL(8, 2)) AS avg_product_ratings
 	FROM gold.fact_reviews
 	GROUP BY product_key
 )r
