@@ -12,7 +12,7 @@ The goal of this project is to use the **Medallion Approach** to build a modern 
 * **Data Management Approach**: Choose the appropriate data management approach.
 * **Data Architecture**: Create and design the data architecture.
 * **ETL Pipeline**: Create an etl pipeline that extracts, transforms, and loads data into the data warehouse.
-* **ETL Logging**: Creata etl log tables that track every etl run to enable easy etl monitoring, traceability, and debugging.
+* **ETL Logging**: Create etl log tables that track every etl run to enable easy etl monitoring, traceability, and debugging.
 * **Data Modeling**: Build a data model that integrates all business objects.
 * **Data Analytics**: Generate SQL-based analytical reports that support business insights and decision-making.
 
